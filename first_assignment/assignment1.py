@@ -15,7 +15,9 @@ print(f"First student: {students[0]['name']}")
 print(f"Last student: {students[-1]['name']}")
 
 #print Rim's scores
-print(f"Rim's scores: {students[2]['scores']}")
+for student in students:
+    if student["name"] == "Rim":
+        print(student["scores"])
 
 #Loop through all students and print one line per student: `Lara is 23 years old and studies AI`.
 for student in students:
@@ -30,20 +32,41 @@ for student in ai_students:
     print(f"{student['name']} is studying AI.")
 
 #same thing but with list comprehension
-ai_students_count = len([student for student in students if student['track'] == 'AI'])
-print(f"Number of students studying AI (using list comprehension): {ai_students_count}")
+ai_students = []
+
+for student in students:
+    if student["track"] == "AI":
+        ai_students.append(student)
+
+print(len(ai_students))
 
 #build a list of students who have studied more than 30 hours and print their names
-students_studied_more_than_30_hours = [student for student in students if student['hours_studied'] > 30]
-print("Students who have studied more than 30 hours:")
-for student in students_studied_more_than_30_hours:
-    print(f"{student['name']}")
+ai_students_comp = [
+    student
+    for student in students
+    if student["track"] == "AI"
+]
+
+print(ai_students_comp) 
+
 
 #Build a list of students who are older than 24 AND in the AI track. (Combining conditions is everyday work.)
-combined_filter = [student for student in students if student['age'] > 24 and student['track'] == 'AI']
-print("Students who are older than 24 and studying AI:")
-for student in combined_filter:
-    print(f"{student['name']}")
+names = [
+    student["name"]
+    for student in students
+    if student["hours_studied"] > 30
+]
+
+print(names)
+#the question only asks for the students' names, you can directly extract what you need:
+
+students_names = [
+    student["name"]
+    for student in students
+    if student["age"] > 24 and student["track"] == "AI"
+]
+
+print(students_names)
 
 #Part 3: Aggregating (turning many records into one number)
 
@@ -56,11 +79,16 @@ total_hours_studied = sum(student['hours_studied'] for student in students)
 print(f"Total hours studied across the whole cohort: {total_hours_studied}")
 
 #find the student who studied the most hours and print their names
-max_hours_studied = max(student['hours_studied'] for student in students)
-top_student = [student for student in students if student['hours_studied'] == max_hours_studied]
-print("Student who studied the most hours:")
-for student in top_student:
-    print(f"{student['name']}")
+max_hours = 0
+top_student = None
+
+for student in students:
+    if student["hours_studied"] > max_hours:
+        max_hours = student["hours_studied"]
+        top_student = student
+
+print(top_student["name"])
+print(top_student["hours_studied"])
 
 #For each student, their final grade is the average of their `scores`. Print each student's name and their final grade, rounded to 1 decimal.
 for student in students:
@@ -113,8 +141,9 @@ for student in data_students:
 
 #Write a function `average_score(student)` that takes one student dictionary and returns their average score.
 def average_score(student):
-    return round(sum(student['scores']) / len(student['scores']), 1)
+    return sum(student["scores"]) / len(student["scores"])
 
+print(round(average_score(student),1))
 #Write a function `top_student(students)` that returns the name of the student with the highest average score. (Use the function from #16 inside it — functions calling functions.)
 def top_student(students):
     top_student = max(students, key=average_score)
